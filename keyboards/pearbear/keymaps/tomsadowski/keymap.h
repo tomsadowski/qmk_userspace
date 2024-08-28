@@ -2,7 +2,7 @@
 #include "process_combo.h"
 #include "keycodes.h"
 #include "quantum_keycodes.h"
-#include "release_gate.h"
+#include "tomsadowski.h"
 
 // constants
 #define SHORT_COMBO_TERM 6
