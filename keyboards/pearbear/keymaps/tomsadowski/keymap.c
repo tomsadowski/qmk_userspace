@@ -32,15 +32,8 @@ uint16_t get_combo_term(uint16_t index, combo_t* combo) {
 // Switching to non-alpha layers breaks capsword
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
-        case ALPHA_LAYER:
-            in_momentary_layer = false;
-            break;
         case MOUSE_LAYER ... GAME3D_LAYER:
-            in_momentary_layer = false;
             caps_word_off();
-            break;
-        case MOMENTARY_ALPHA_LAYER ... MOMENTARY_MOUSE_LAYER:
-            in_momentary_layer = true;
             break;
         default: break;
     }
@@ -93,8 +86,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case LAYOUT_HOME:
             if (record->event.pressed)
                 return press_home();
-            else
-                return false;
+            return false;
 
         case RELEASE_GATE:
             if (record->event.pressed)
@@ -102,31 +94,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             else
                 return release_release_gate(&release_gate);
 
+        case CAPS_OFF:
+            if (record->event.pressed)
+                caps_word_off();
+            return false;
+
         case CAPS_ON:
             if (record->event.pressed)
                 return press_caps_on();
-            else
-                return false;
-
-        case FOUR_SPACE:
-            if (record->event.pressed) {
-                SEND_STRING("    ");
-            }
-            return true;
+            return false;
 
         default: return true;
     }
 }
 
-bool press_caps_on() {
-    caps_word_on();
-    return false;
-}
-
-bool press_home() {
+void press_home() {
     caps_word_off();
     reset_release_gate(&release_gate);
-    if (!in_momentary_layer)
-        layer_move(ALPHA_LAYER);
-    return false;
+    layer_move(ALPHA_LAYER);
 }
